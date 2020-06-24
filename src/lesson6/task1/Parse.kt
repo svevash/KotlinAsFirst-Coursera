@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import java.util.*
+
 /**
  * Пример
  *
@@ -49,12 +51,10 @@ fun main(args: Array<String>) {
         val seconds = timeStrToSeconds(line)
         if (seconds == -1) {
             println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-        }
-        else {
+        } else {
             println("Прошло секунд с начала суток: $seconds")
         }
-    }
-    else {
+    } else {
         println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
     }
 }
@@ -207,4 +207,48 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun checkCommands(commands: String): Boolean {
+    val stackBrackets = Stack<Char>()
+    for (c in commands) {
+        if (c != '>' && c != '<' && c != '+' && c != '-' && c != '[' && c != ']' && c != ' ') {
+            return false
+        }
+        if (c == '[') {
+            stackBrackets.push('[')
+        } else if (c == ']') {
+            if (stackBrackets.empty()) {
+                return false
+            }
+            stackBrackets.pop()
+        }
+    }
+    if (!stackBrackets.empty()) {
+        return false
+    }
+    return true
+}
+
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    if (!checkCommands(commands)) {
+        throw IllegalArgumentException()
+    }
+
+    var cellList = mutableListOf<Int>()
+    for (i in 0..cells) {
+        cellList.add(0)
+    }
+
+    var countCommands = 0
+    val i = cells / 2
+    val j = 0
+    for (c in commands) {
+        countCommands++
+        if (countCommands > limit) {
+            break
+        }
+        if (c == '>') {
+
+        }
+    }
+    return emptyList()
+}

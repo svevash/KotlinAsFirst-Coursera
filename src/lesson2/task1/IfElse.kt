@@ -1,7 +1,9 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson2.task1
 
 import lesson1.task1.discriminant
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -110,7 +112,36 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    var big = a;
+    var smol1 = b
+    var smol2 = c
+    if (c > a) {
+        big = c
+        smol2 = a
+    }
+    if (b > big) {
+        big = b
+        smol1 = a
+        smol2 = c
+    }
+
+    when {
+        big >= smol1 + smol2 -> {
+            return -1
+        }
+        big * big == smol1 * smol1 + smol2 * smol2 -> {
+            return 1
+        }
+        big * big < smol1 * smol1 + smol2 * smol2 -> {
+            return 0
+        }
+        big * big > smol1 * smol1 + smol2 * smol2 -> {
+            return 2
+        }
+    }
+    return -1
+}
 
 /**
  * Средняя
@@ -120,4 +151,45 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    when {
+        a == b -> {
+            return if (a in c..d) {
+                0
+            } else -1
+        }
+        c == d -> {
+            return if (c in a..b) {
+                0
+            } else -1
+        }
+        a >= c -> {
+            when {
+                a > d -> {
+                    return -1
+                }
+                d <= b -> {
+                    return abs(d - a)
+                }
+                d > b -> {
+                    return abs(b - a)
+                }
+            }
+        }
+        b >= c -> {
+            when {
+                c > b -> {
+                    return -1
+                }
+                d <= b -> {
+                    return abs(d - c)
+                }
+                d >= b -> {
+                    return abs(b - c)
+                }
+            }
+        }
+    }
+
+    return -1
+}

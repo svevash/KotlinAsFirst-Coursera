@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import kotlin.math.max
+
 /**
  * Пример
  *
@@ -274,4 +276,63 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+
+fun findAnswer(k: Int, s: Int, w: List<Int>, ans: MutableList<Int>, A: List<List<Int>>): MutableList<Int> {
+    if (A[k][s] == 0) {
+        return ans
+    }
+    if (A[k - 1][s] == A[k][s]) {
+        findAnswer(k - 1, s, w, ans, A)
+    } else {
+        findAnswer(k - 1, s - w[k - 1], w, ans, A)
+        ans.add(k)
+    }
+    return ans
+}
+
+
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, W: Int): Set<String> {
+    val w = mutableListOf<Int>()
+    val p = mutableListOf<Int>()
+
+    for (i in treasures) {
+        w.add(i.value.first)
+        p.add(i.value.second)
+    }
+
+    val A = mutableListOf<MutableList<Int>>()
+
+    for (i in 0..w.size) {
+        A.add(mutableListOf())
+        for (j in 0..W) {
+            A[i].add(0)
+        }
+    }
+
+    for (k in 1..treasures.size) {
+        for (s in 1..W) {
+            if (s >= w[k - 1]) {
+                A[k][s] = max(A[k - 1][s], A[k - 1][s - w[k - 1]] + p[k - 1])
+            } else {
+                A[k][s] = A[k - 1][s]
+            }
+        }
+    }
+
+    val result = mutableSetOf<String>()
+    var resInt = mutableListOf<Int>()
+
+    resInt = findAnswer(treasures.size, W, w, resInt, A)
+
+    for (i in resInt) {
+        var k = 1
+        for (j in treasures) {
+            if (k == i) {
+                result.add(j.key)
+            }
+            k++
+        }
+    }
+
+    return result
+}

@@ -1,6 +1,8 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson3.task1
 
+import java.lang.Math.pow
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 /**
@@ -11,7 +13,7 @@ import kotlin.math.sqrt
 fun factorial(n: Int): Double {
     var result = 1.0
     for (i in 1..n) {
-        result = result * i // Please do not fix in master
+        result *= i // Please do not fix in master
     }
     return result
 }
@@ -159,7 +161,29 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+
+fun countDigits(n: Int): Int {
+    var num = n
+    var count = 0
+    do {
+        count++
+        num /= 10
+    } while (num != 0)
+    return count
+}
+
+fun revert(n: Int): Int {
+    val k = countDigits(n)
+    var result = 0
+    var start = n
+
+    for (i in 0..k) {
+        result += (10.0.pow((k - i - 1) * 1.0)).toInt() * (start % 10)
+        start /= 10
+    }
+
+    return result
+}
 
 /**
  * Средняя
@@ -191,15 +215,83 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+
+fun squareSequenceDigit(n: Int): Int {
+    var a = 1
+    var b = 1
+    var count = 1
+
+    for (i in 1 until n) {
+        a++
+        b = a * a
+
+        var btmp = b
+
+        var numSize = countDigits(b)
+
+        do {
+            count += 1
+
+            btmp %= (10.0.pow(numSize * 1.0)).toInt()
+            numSize--
+
+            if (count == n) {
+                b = btmp / (10.0.pow(numSize * 1.0)).toInt()
+                return b
+            }
+        } while (numSize > 0)
+
+        if (count == n) {
+            b = btmp / (10.0.pow(numSize * 1.0)).toInt()
+            break
+        }
+    }
+    return b
+}
 
 /**
  * Сложная
  *
  * Найти n-ю цифру последовательности из чисел Фибоначчи (см. функцию fib выше):
- * 1123581321345589144...
+ * 1 1 2 3 5 8 13 21 34 5(5) 89144...
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+
+fun fibSequenceDigit(n: Int): Int {
+    var a = 1
+    var b = 1
+    var sum = a
+
+    var count = 2
+
+    for (i in 2 until n) {
+        sum = a + b
+        a = b
+        b = sum
+
+        var sumtmp = sum
+
+        var numSize = countDigits(sum)
+
+        do {
+            count += 1
+
+            sumtmp %= (10.0.pow(numSize * 1.0)).toInt()
+            numSize--
+
+            if (count == n) {
+                sum = sumtmp / (10.0.pow(numSize * 1.0)).toInt()
+                return sum
+            }
+        } while (numSize > 0)
+
+        if (count == n) {
+            sum = sumtmp / (10.0.pow(numSize * 1.0)).toInt()
+            break
+        }
+    }
+
+    return sum
+}

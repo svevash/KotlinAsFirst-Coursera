@@ -139,9 +139,9 @@ fun center(list: MutableList<Double>): MutableList<Double> = TODO()
  *
  * Найти скалярное произведение двух векторов равной размерности,
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
- * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
+ * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
-fun times(a: List<Double>, b: List<Double>): Double = TODO()
+fun times(a: List<Int>, b: List<Int>): Int = TODO()
 
 /**
  * Средняя
@@ -149,9 +149,9 @@ fun times(a: List<Double>, b: List<Double>): Double = TODO()
  * Рассчитать значение многочлена при заданном x:
  * p(x) = p0 + p1*x + p2*x^2 + p3*x^3 + ... + pN*x^N.
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
- * Значение пустого многочлена равно 0.0 при любом x.
+ * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Double>, x: Double): Double = TODO()
+fun polynom(p: List<Int>, x: Int): Int = TODO()
 
 /**
  * Средняя
@@ -163,7 +163,7 @@ fun polynom(p: List<Double>, x: Double): Double = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Double>): MutableList<Double> = TODO()
+fun accumulate(list: ArrayList<Int>): MutableList<Int> = TODO()
 
 /**
  * Средняя
@@ -199,6 +199,9 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * Результат перевода вернуть в виде строки, цифры более 9 представлять латинскими
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
+ *
+ * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
+ * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String = TODO()
 
@@ -219,7 +222,11 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Цифры более 9 представляются латинскими строчными буквами:
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
+ *
+ * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
+ * (например, str.toInt(base)), запрещается.
  */
+
 fun decimalFromString(str: String, base: Int): Int = TODO()
 
 /**
@@ -230,7 +237,33 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    val numbers = mapOf(
+            Pair("M", 1000),
+            Pair("CM", 900),
+            Pair("D", 500),
+            Pair("CD", 400),
+            Pair("C", 100),
+            Pair("XC", 90),
+            Pair("L", 50),
+            Pair("XL", 40),
+            Pair("X", 10),
+            Pair("IX", 9),
+            Pair("V", 5),
+            Pair("IV", 4),
+            Pair("I", 1))
+
+    var result = ""
+    var n1 = n
+
+    for (i in numbers.keys) {
+        val entries = n1 / numbers[i]!!
+        n1 -= entries * numbers[i]!!
+        result += i.repeat(entries)
+    }
+
+    return result
+}
 
 /**
  * Очень сложная
@@ -239,4 +272,69 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+
+fun countDigits(n: Int): Int {
+    var num = n
+    var count = 0
+    do {
+        count++
+        num /= 10
+    } while (num != 0)
+    return count
+}
+
+fun russian(n: Int): String {
+    // массив оснований
+    val basis = listOf(
+            listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"),
+            listOf("", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"),
+            listOf("", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"),
+            listOf("", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"))
+
+    // массив окончаний
+    val endings = listOf("тысяч", "тысяча", "тысячи", "тысячи", "тысячи", "тысяч", "тысяч", "тысяч", "тысяч", "тысяч")
+
+    // 10..19
+    val dec = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
+
+    var result = ""
+
+    val cDig = countDigits(n)
+
+
+    // для тысяч
+    if (cDig > 3) {
+        // сотни
+        result += basis[2][n / 100000] + " "
+        result += when {
+            // если конец в 10..19
+            (n % 100000) / 1000 in 10..19 -> {
+                dec[(n % 100000) / 1000 - 10] + " " + endings[0] + " "
+            }
+            else -> {
+                basis[1][(n % 100000) / 10000] + " " + basis[3][(n % 10000) / 1000] + " " + endings[(n % 10000) / 1000] + " "
+            }
+        }
+    }
+
+    // сотни
+    result += basis[2][(n % 1000) / 100] + " "
+    // если конец в 10..19
+    result += if (n % 100 in 10..19) {
+        dec[(n % 100) - 10] + " "
+    } else {
+        basis[1][(n % 100) / 10] + " " + basis[0][n % 10]
+    }
+
+
+    // убрать лишние пробелы
+    val ansList = result.split(" ")
+    var ans = ""
+
+    for (i in ansList) {
+        if (i != "")
+            ans += "$i "
+    }
+
+    return ans.substring(0, ans.length - 1)
+}
